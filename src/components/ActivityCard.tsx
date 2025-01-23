@@ -1,4 +1,8 @@
-import { Activity } from '@prisma/client';
+interface Activity {
+  name: string;
+  description: string;
+  weather: string[];
+}
 
 export default function ActivityCard({ activity }: { activity: Activity }) {
   return (

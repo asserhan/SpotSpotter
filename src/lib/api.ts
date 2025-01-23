@@ -1,12 +1,11 @@
 // lib/api.ts
 import axios from 'axios';
-import { OpenAIApi, Configuration } from 'openai';
+import OpenAI from 'openai';
 
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY as string,
 });
-
-const openai = new OpenAIApi(configuration);
+console.log(process.env.OPENAI_API_KEY);
 
 export const getWeather = async (lat: number, lon: number) => {
   const response = await axios.get(
@@ -20,20 +19,25 @@ export const generateActivitySuggestion = async (
   timeOfDay: string,
   preferences: string[]
 ) => {
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "system",
-        content: "You are a local activity recommendation expert."
-      },
-      {
-        role: "user",
-        content: `Suggest an activity for ${weather} weather during ${timeOfDay}. 
-                  User preferences: ${preferences.join(', ')}`
-      }
-    ]
-  });
+  try {
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        {
+          role: "system",
+          content: "You are a local activity recommendation expert."
+        },
+        {
+          role: "user",
+          content: `Suggest an activity for ${weather} weather during ${timeOfDay}. 
+                    User preferences: ${preferences.join(', ')}`
+        }
+      ]
+    });
 
-  return completion.data.choices[0].message?.content;
+    return completion.choices[0].message?.content;
+  } catch (error) {
+    console.error('OpenAI API error:', error);
+    throw error;
+  }
 };

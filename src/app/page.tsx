@@ -1,7 +1,15 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Map from '../components/Map';
-import { Activity } from '../components/ActivityCard';
+type Activity = {
+  id: number;
+  name: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+  weather: string[];
+};
+import ActivityCard from '../components/ActivityCard';
 import { getWeather, generateActivitySuggestion } from '../lib/api';
 
 export default function Home() {
@@ -14,7 +22,7 @@ export default function Home() {
       async (position) => {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
-        const weather = await getWeather(location, location);
+        const weather = await getWeather(latitude, longitude);
         const suggestedActivities = await generateActivitySuggestion(
           weather.current.condition.text,
           new Date().getHours() < 12 ? 'morning' :
