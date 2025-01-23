@@ -1,65 +1,89 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Map from '../components/Map';
+import ActivityCard from '../components/ActivityCard';
+import { getWeather, generateActivitySuggestion } from '../lib/api';
+
 type Activity = {
-  id: number;
+  id: string;
   name: string;
   latitude: number;
   longitude: number;
   description: string;
   weather: string[];
+  category: string;
 };
-import ActivityCard from '../components/ActivityCard';
-import { getWeather, generateActivitySuggestion } from '../lib/api';
 
 export default function Home() {
-  const [location, setLocation] = useState<{ lat: number, lng: number }>({ lat: 0, lng: 0 });
+  const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [Loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
-        const weather = await getWeather(latitude, longitude);
-        const suggestedActivities = await generateActivitySuggestion(
-          weather.current.condition.text,
-          new Date().getHours() < 12 ? 'morning' :
-            new Date().getHours() < 17 ? 'afternoon' : 'evening',
-          ['outdoor', 'indoor']
-        );
-        const response = await fetch(`/api/activities?latitude=${latitude}&longitude=${longitude}`);
-        const activities = await response.json();
-        setActivities(activities);
-        setLoading(false);
+        
+        try {
+          const weather = await getWeather(latitude, longitude);
+          
+          const suggestion = await generateActivitySuggestion(
+            weather.current.condition.text,
+            new Date().getHours() < 12 ? 'morning' : 
+            new Date().getHours() < 18 ? 'afternoon' : 'evening',
+            ['outdoor', 'cultural']
+          );
+          
+          const response = await fetch('/api/activities', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              suggestion, 
+              location: { latitude, longitude } 
+            })
+          });
 
-        (error: any) => {
-          console.log('Error getting location', error);
+          if (!response.ok) {
+            throw new Error('Failed to fetch activities');
+          }
+
+          const activities = await response.json();
+          setActivities(activities);
+          setLoading(false);
+        } catch (error) {
+          console.error('Error:', error);
+          setActivities([]);
           setLoading(false);
         }
+      },
+      (error) => {
+        console.error('Location error:', error);
+        setLoading(false);
       }
     );
-
-
-
   }, []);
-  if (Loading) return <div>Loading...</div>;
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Local Explorer</h1>
-      
+
       {location && (
         <div className="mb-8">
-          <Map 
-            center={location}
-            markers={activities.map(a => ({
-              lat: a.latitude,
-              lng: a.longitude,
-              title: a.name
-            }))}
-          />
+          {activities.length > 0 && (
+            <Map
+              center={location}
+              markers={activities.map(a => ({
+                lat: a.latitude,
+                lng: a.longitude,
+                title: a.name
+              }))}
+            />
+          )}
         </div>
       )}
 
@@ -71,4 +95,3 @@ export default function Home() {
     </div>
   );
 }
-

@@ -1,9 +1,9 @@
-// lib/api.ts
+
 import axios from 'axios';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY as string,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 console.log(process.env.OPENAI_API_KEY);
 
