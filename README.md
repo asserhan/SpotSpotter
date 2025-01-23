@@ -1,0 +1,2 @@
+# SpotSpotter
+Local Explorer app 
