@@ -14,7 +14,7 @@ export default function Map({ center, markers }: {
         <GoogleMap
             zoom={14}
             center={center}
-            mapContainerClassName="w-full h-[400px]"
+            mapContainerClassName="w-full h-full"
         >
             {markers.map((marker, index) => (
                 <Marker

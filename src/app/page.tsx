@@ -25,39 +25,39 @@ export default function Home() {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude });
         
-        try {
-          const weather = await getWeather(latitude, longitude);
+        // try {
+        //   const weather = await getWeather(latitude, longitude);
           
-          const suggestion = await generateActivitySuggestion(
-            weather.current.condition.text,
-            new Date().getHours() < 12 ? 'morning' : 
-            new Date().getHours() < 18 ? 'afternoon' : 'evening',
-            ['outdoor', 'cultural']
-          );
+        //   const suggestion = await generateActivitySuggestion(
+        //     weather.current.condition.text,
+        //     new Date().getHours() < 12 ? 'morning' : 
+        //     new Date().getHours() < 18 ? 'afternoon' : 'evening',
+        //     ['outdoor', 'cultural']
+        //   );
           
-          const response = await fetch('/api/activities', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 
-              suggestion, 
-              location: { latitude, longitude } 
-            })
-          });
+        //   const response = await fetch('/api/activities', {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ 
+        //       suggestion, 
+        //       location: { latitude, longitude } 
+        //     })
+        //   });
 
-          if (!response.ok) {
-            throw new Error('Failed to fetch activities');
-          }
+        //   if (!response.ok) {
+        //     throw new Error('Failed to fetch activities');
+        //   }
 
-          const activities = await response.json();
-          setActivities(activities);
-          setLoading(false);
-        } catch (error) {
-          console.error('Error:', error);
-          setActivities([]);
-          setLoading(false);
-        }
+        //   const activities = await response.json();
+        //   setActivities(activities);
+        //   setLoading(false);
+        // } catch (error) {
+        //   console.error('Error:', error);
+        //   setActivities([]);
+        //   setLoading(false);
+        // }
       },
       (error) => {
         console.error('Location error:', error);
@@ -66,15 +66,31 @@ export default function Home() {
     );
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  // if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Local Explorer</h1>
+    <div className="relative h-screen w-screen"
+     style={{
+          background: "linear-gradient(to bottom, #043A4D, #8B9597, #C3BBB5)",
+        }}
+    >
+      <h1 className="flex justify-center text-4xl font-bold mb-8">Local Explorer </h1>
+      <div className='flex gap-1 mb-4'>
+        <input
+          type='text'
+          placeholder='Find a city'
+          className='w-[400px] max-w-md p-3 rounded-lg bg-gray-300 ml-4 transform translate-y-8'
+        />
+        <button className='p-3 bg-gray-300 rounded-lg transform translate-y-8'>
+          <img src='/search.svg'  className='w-6 h-6' />
+        </button>
+        <button className='p-3 bg-gray-300 rounded-lg transform translate-y-8'>
+          <img src='/location.svg'  className='w-6 h-6' />
+        </button>
 
+      </div>
       {location && (
-        <div className="mb-8">
-          {activities.length > 0 && (
+        <div className="flex absolute top-40 left-4 w-[40%] h-[80%] mx-auto rounded-lg">        
             <Map
               center={location}
               markers={activities.map(a => ({
@@ -83,15 +99,15 @@ export default function Home() {
                 title: a.name
               }))}
             />
-          )}
+          
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {activities.map((activity) => (
           <ActivityCard key={activity.id} activity={activity} />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
