@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Map from '../components/Map';
-import ActivityCard from '../components/ActivityCard';
+import AIActivitySuggestions from '@/components/ActivityCard';
 import { getWeather, getForecast } from '../lib/api';
 
 type Activity = {
@@ -53,9 +53,9 @@ export default function Home() {
           console.error('Error getting weather:', err);
           setError('Error fetching weather data');
         }
-     
+
       }, (error: GeolocationPositionError) => {
-        console.error('Error getting location:', error);  
+        console.error('Error getting location:', error);
         setError('Error getting location');
       });
     }
@@ -64,7 +64,7 @@ export default function Home() {
   const handleCitySearch = async () => {
     if (!city.trim()) return;
     setError('');
-    
+
     try {
       const response = await fetch(
         `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(city)}&limit=1&appid=${process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY}`
@@ -105,7 +105,7 @@ export default function Home() {
         >
           <img src='/search.svg' className='w-6 h-6' alt="Search" />
         </button>
-        <button 
+        <button
           className='p-3 bg-gray-400 rounded-lg transform translate-y-8'
           onClick={handleLocation}
         >
@@ -113,21 +113,26 @@ export default function Home() {
         </button>
       </div>
       {weatherData && (
-        <div className=" absolute right-10 top-[12.5%] w-[900px] bg-gray-400 p-12 rounded-lg shadow-lg">
-          <div className="flex items-center gap-4">
-            <img 
-              src={weatherData.current.condition.icon} 
-              alt={weatherData.current.condition.text}
-              className="w-16 h-16"
-            />
-            <div>
-              <h2 className="text-xl font-semibold">{weatherData.location.name}</h2>
-              <p className="text-lg">{weatherData.current.temp_c}°C</p>
-              <p>{weatherData.current.condition.text}</p>
+        <div>
+          <div className=" absolute right-10 top-[12.5%] w-[900px] bg-gray-400 p-12 rounded-lg shadow-lg">
+            <div className="flex items-center gap-4">
+              <img
+                src={weatherData.current.condition.icon}
+                alt={weatherData.current.condition.text}
+                className="w-16 h-16"
+              />
+              <div>
+                <h2 className="text-xl font-semibold">{weatherData.location.name}</h2>
+                <p className="text-lg">{weatherData.current.temp_c}°C</p>
+                <p>{weatherData.current.condition.text}</p>
+              </div>
             </div>
           </div>
+          <div className="absolute right-10 top-[35%] w-[900px]">
+            <AIActivitySuggestions weatherData={weatherData} />
           </div>
-        )}
+        </div>
+      )}
       {location && (
         <div className="flex absolute top-40 left-4 w-[34%] min-w-[300px] h-[80%] mx-auto rounded-lg">
           <Map
