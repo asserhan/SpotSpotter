@@ -1,10 +1,27 @@
+version: '3.8'
+
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/mime.types:/etc/nginx/mime.types:ro
+    depends_on:
+      - nextjs
+    networks:
+      - app_network
+    restart: unless-stopped
+
   nextjs:
     build:
       context: ./app
       dockerfile: ../Dockerfile
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     volumes:
       - ./app:/app
       - /app/node_modules
@@ -12,3 +29,10 @@ services:
     environment:
       - NODE_ENV=development
     command: npm run dev
+    networks:
+      - app_network
+    restart: unless-stopped
+
+networks:
+  app_network:
+    driver: bridge
