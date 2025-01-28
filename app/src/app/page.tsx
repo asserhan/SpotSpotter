@@ -85,64 +85,79 @@ export default function Home() {
   };
 
   return (
-    <div className=" min-h-screen w-screen"
+    <div className="min-h-screen w-full overflow-x-hidden"
       style={{
         background: "linear-gradient(to bottom, #043A4D, #8B9597, #C3BBB5)",
       }}
     >
-      <h1 className="flex justify-center text-4xl font-bold mb-8 text-white">Local Explorer</h1>
-      <div className='flex gap-2 mb-4'>
+      <h1 className="text-center text-2xl md:text-4xl font-bold pt-6 pb-4 text-white">
+        Local Explorer
+      </h1>
+      <div className="flex flex-col sm:flex-row gap-2 px-4 mb-4 justify-center items-center">
         <input
-          type='text'
-          placeholder='Find a city'
+          type="text"
+          placeholder="Find a city"
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className='w-[400px] max-w-[80vw] p-3 rounded-lg bg-gray-400 ml-4 transform translate-y-8 placeholder:text-gray-600'
+          className="w-full sm:w-[400px] p-3 rounded-lg bg-gray-400 placeholder:text-gray-600"
         />
-        <button
-          className='p-3 bg-gray-400 rounded-lg transform translate-y-8'
-          onClick={handleCitySearch}
-        >
-          <img src='/search.svg' className='w-6 h-6' alt="Search" />
-        </button>
-        <button
-          className='p-3 bg-gray-400 rounded-lg transform translate-y-8'
-          onClick={handleLocation}
-        >
-          <img src='/location.svg' className='w-6 h-6' alt="Use current location" />
-        </button>
+        <div className="flex gap-2">
+          <button
+            className="p-3 bg-gray-400 rounded-lg"
+            onClick={handleCitySearch}
+          >
+            <img src="/search.svg" className="w-6 h-6" alt="Search" />
+          </button>
+          <button
+            className="p-3 bg-gray-400 rounded-lg"
+            onClick={handleLocation}
+          >
+            <img src="/location.svg" className="w-6 h-6" alt="Use current location" />
+          </button>
+        </div>
       </div>
-      {weatherData && (
-        <div>
-          <div className=" absolute right-10 top-[12.5%] w-[900px] bg-gray-400 p-12 rounded-lg shadow-lg">
-            <div className="flex items-center gap-4">
-              <img
-                src={weatherData.current.condition.icon}
-                alt={weatherData.current.condition.text}
-                className="w-16 h-16"
-              />
-              <div>
-                <h2 className="text-xl font-semibold">{weatherData.location.name}</h2>
-                <p className="text-lg">{weatherData.current.temp_c}°C</p>
-                <p>{weatherData.current.condition.text}</p>
+      <div className="flex flex-col lg:flex-row gap-4 px-4 mt-4">
+        {location && (
+          <div className="w-full lg:w-[40%] h-[400px] md:h-[600px] lg:h-[700px] rounded-lg overflow-hidden">
+            <Map
+              center={location}
+              markers={activities.map(a => ({
+                lat: a.latitude,
+                lng: a.longitude,
+                title: a.name
+              }))}
+            />
+          </div>
+        )}
+        {weatherData && (
+          <div className="w-full lg:w-[60%] space-y-4">
+            <div className="bg-gray-400 p-6 rounded-lg shadow-lg">
+              <div className="flex items-center gap-4">
+                <img
+                  src={weatherData.current.condition.icon}
+                  alt={weatherData.current.condition.text}
+                  className="w-12 md:w-16 h-12 md:h-16"
+                />
+                <div>
+                  <h2 className="text-lg md:text-xl font-semibold">
+                    {weatherData.location.name}
+                  </h2>
+                  <p className="text-base md:text-lg">
+                    {weatherData.current.temp_c}°C
+                  </p>
+                  <p>{weatherData.current.condition.text}</p>
+                </div>
               </div>
             </div>
+            <div className="w-full">
+              <AIActivitySuggestions weatherData={weatherData} />
+            </div>
           </div>
-          <div className="absolute right-10 top-[35%] w-[900px]">
-            <AIActivitySuggestions weatherData={weatherData} />
-          </div>
-        </div>
-      )}
-      {location && (
-        <div className="flex absolute top-40 left-4 w-[34%] min-w-[300px] h-[80%] mx-auto rounded-lg">
-          <Map
-            center={location}
-            markers={activities.map(a => ({
-              lat: a.latitude,
-              lng: a.longitude,
-              title: a.name
-            }))}
-          />
+        )}
+      </div>
+      {error && (
+        <div className="fixed bottom-4 right-4 bg-red-500 text-white p-4 rounded-lg">
+          {error}
         </div>
       )}
     </div>

@@ -20,6 +20,31 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.placeholder-sm::placeholder {
-  font-size: 0.875rem; 
+/* Responsive styles */
+.container {
+  @apply w-full p-4;
+}
+
+.input-group {
+  @apply flex flex-col gap-2 md:flex-row md:items-center;
+}
+
+.input-group input {
+  @apply w-full md:w-[400px] p-3 rounded-lg bg-gray-400 placeholder:text-gray-600;
+}
+
+.input-group button {
+  @apply p-3 bg-gray-400 rounded-lg;
+}
+
+.weather-card {
+  @apply w-full md:w-[60%] p-4 rounded-lg bg-gray-400 mb-4;
+}
+
+.map-container {
+  @apply w-full h-[300px] md:h-[400px] lg:h-[500px] mb-4;
+}
+
+.activity-suggestions {
+  @apply w-full md:w-[40%] p-4 rounded-lg bg-gray-400;
 }
