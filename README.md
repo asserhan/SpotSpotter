@@ -59,6 +59,11 @@ The application will be available at:
 
 HTTPS: https://localhost:443
 
+## App screen 
+<img src="localExplorer.png" />
+
+## Contact
+If you encounter any issues please contact me on asseraouhanane@gmail.com
 
 
 >>>>>>> 
