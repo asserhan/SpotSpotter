@@ -15,8 +15,8 @@ Node.js (v14 or higher)
 ## Installation & Setup
 
 ```
-git clone [your-repository-url]
-cd [repository-name]
+git clone https://github.com/asserhan/SpotSpotter.git
+cd SpotSpotter
 ```
 
 ## SSL Setup
