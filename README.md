@@ -3,7 +3,7 @@
 Local Explorer app 
 =======
 Local Explorer Project
-This project is a web application that allows users to explore local activities based on their current location, weather conditions, and the time of day. It leverages APIs for weather data, OpenAI, and Google Maps, and uses Prisma to interact with a PostgreSQL database.
+This project is a web application that allows users to explore local activities based on their current location, weather conditions, and the time of day. It leverages APIs for weather data, OpenAI, and Google Maps.
 
 Features
 Current Location Detection: Uses the browser's geolocation API to get the user's current location.
@@ -12,8 +12,6 @@ Activity Suggestions: Suggests activities based on the weather, time of day, and
 Interactive Map: Displays a map with markers for local activities using Google Maps.
 Prerequisites
 Node.js (v14 or higher)
-PostgreSQL (for database)
-Prisma (for database management)
 ## Installation & Setup
 
 ```
