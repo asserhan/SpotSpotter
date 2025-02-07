@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Map from '../components/Map';
 import AIActivitySuggestions from '@/components/ActivityCard';
-import { getWeather, getForecast } from '../lib/api';
+import { getWeather} from '../lib/api';
 
 type Activity = {
   id: string;
